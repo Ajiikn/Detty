@@ -306,7 +306,7 @@ body::after {
   position: fixed; bottom: 24px; right: 24px; z-index: 93;
   width: 48px; height: 48px; border-radius: 50%;
   border: 1px solid var(--border); background: var(--surface);
-  color: var(--dim); font-size: 16px;
+  color: var(--teal); font-size: 16px;
   display: flex; align-items: center; justify-content: center;
   cursor: pointer; transition: all 0.2s;
 }
