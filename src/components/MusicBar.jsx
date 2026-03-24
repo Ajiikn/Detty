@@ -1,11 +1,11 @@
 function fmtTime(s) {
   if (!s || !isFinite(s)) return "--:--";
-  const m   = Math.floor(s / 60);
+  const m = Math.floor(s / 60);
   const sec = Math.floor(s % 60);
   return `${m}:${sec < 10 ? "0" : ""}${sec}`;
 }
 
-export default function MusicBar({
+function MusicBar({
   track,
   playing,
   progress,
@@ -16,7 +16,7 @@ export default function MusicBar({
   onSeek,
 }) {
   const handleProgressClick = (e) => {
-    const rect  = e.currentTarget.getBoundingClientRect();
+    const rect = e.currentTarget.getBoundingClientRect();
     const ratio = (e.clientX - rect.left) / rect.width;
     onSeek(ratio);
   };
@@ -63,3 +63,5 @@ export default function MusicBar({
     </div>
   );
 }
+
+export default React.memo(MusicBar);

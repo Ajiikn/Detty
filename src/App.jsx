@@ -37,15 +37,21 @@ export default function App() {
     const a = new Audio();
     a.preload = "metadata";
 
+    let lastUpdate = 0;
+
     a.addEventListener("timeupdate", () => {
       if (!a.duration) return;
+
+      const now = performance.now();
+      if (now - lastUpdate < 250) return; // throttle updates (~4/sec)
+      lastUpdate = now;
+
       setCurTime(a.currentTime);
       setProgress((a.currentTime / a.duration) * 100);
     });
 
     a.addEventListener("loadedmetadata", () => setDuration(a.duration));
 
-    // Loop back to start when track ends (only 1 track for now)
     a.addEventListener("ended", () => {
       a.currentTime = 0;
       a.play().catch(() => {});

@@ -119,6 +119,7 @@ body::after {
 .mbar-time {
   font-family: var(--font-m); font-size: 8px; letter-spacing: 0.08em;
   color: var(--dim); white-space: nowrap; flex-shrink: 0;
+  width: 80px;  text-align: right;
 }
 
 .mbar-btn {
