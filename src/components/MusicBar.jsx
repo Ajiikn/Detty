@@ -1,3 +1,5 @@
+import { useMemo } from "react";
+
 function fmtTime(s) {
   if (!s || !isFinite(s)) return "--:--";
   const m = Math.floor(s / 60);
@@ -5,7 +7,7 @@ function fmtTime(s) {
   return `${m}:${sec < 10 ? "0" : ""}${sec}`;
 }
 
-function MusicBar({
+export default function MusicBar({
   track,
   playing,
   progress,
@@ -15,6 +17,11 @@ function MusicBar({
   onMute,
   onSeek,
 }) {
+  const timeDisplay = useMemo(
+    () => `${fmtTime(curTime)} / ${fmtTime(duration)}`,
+    [curTime, duration],
+  );
+
   const handleProgressClick = (e) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const ratio = (e.clientX - rect.left) / rect.width;
@@ -30,15 +37,11 @@ function MusicBar({
         <div className="mbar-title">{track.title}</div>
       </div>
 
-      {/* Clickable progress bar  */}
       <div className="mbar-prog" onClick={handleProgressClick}>
         <div className="mbar-fill" style={{ width: `${progress}%` }} />
       </div>
 
-      {/* Timestamp */}
-      <div className="mbar-time">
-        {fmtTime(curTime)} / {fmtTime(duration)}
-      </div>
+      <div className="mbar-time">{timeDisplay}</div>
 
       <button
         className="mbar-btn mbar-play"
@@ -63,5 +66,3 @@ function MusicBar({
     </div>
   );
 }
-
-export default React.memo(MusicBar);
