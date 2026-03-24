@@ -5,13 +5,15 @@ export default function ShopSection() {
     <section id="shop" className="sec shop">
       <div className="shop-wrap">
         <div className="sec-label">/// Collection 01</div>
-        <h2 className="sec-title">WAR AT 11:10</h2>
+        <h2 className="sec-title">11:10</h2>
         <div className="shop-grid">
           {PRODUCTS.map((p) => (
             <div key={p.id} className="pcard">
               <img src={p.img} alt={p.name} loading="lazy" />
               <div className="pcard-overlay">
-                <div className={`pcard-tag${p.tag === "SOLD OUT" ? " sold" : ""}`}>
+                <div
+                  className={`pcard-tag${p.tag === "SOLD OUT" ? " sold" : ""}`}
+                >
                   {p.tag}
                 </div>
                 <div className="pcard-name">{p.name}</div>
