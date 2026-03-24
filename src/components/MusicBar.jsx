@@ -1,27 +1,12 @@
-import { useMemo } from "react";
-
-function fmtTime(s) {
-  if (!s || !isFinite(s)) return "--:--";
-  const m = Math.floor(s / 60);
-  const sec = Math.floor(s % 60);
-  return `${m}:${sec < 10 ? "0" : ""}${sec}`;
-}
-
 export default function MusicBar({
   track,
   playing,
-  progress,
-  curTime,
-  duration,
+  fillRef,
+  timeRef,
   onPlay,
   onMute,
   onSeek,
 }) {
-  const timeDisplay = useMemo(
-    () => `${fmtTime(curTime)} / ${fmtTime(duration)}`,
-    [curTime, duration],
-  );
-
   const handleProgressClick = (e) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const ratio = (e.clientX - rect.left) / rect.width;
@@ -37,11 +22,15 @@ export default function MusicBar({
         <div className="mbar-title">{track.title}</div>
       </div>
 
+      {/* Progress bar updated via direct DOM ref — no re-renders */}
       <div className="mbar-prog" onClick={handleProgressClick}>
-        <div className="mbar-fill" style={{ width: `${progress}%` }} />
+        <div className="mbar-fill" ref={fillRef} style={{ width: "0%" }} />
       </div>
 
-      <div className="mbar-time">{timeDisplay}</div>
+      {/* Timestamp updated via direct DOM ref — no re-renders */}
+      <div className="mbar-time" ref={timeRef}>
+        --:-- / --:--
+      </div>
 
       <button
         className="mbar-btn mbar-play"

@@ -1,5 +1,5 @@
 export const CSS = `
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=block');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -92,8 +92,6 @@ body::after {
   background: rgba(8,8,8,0.96);
   backdrop-filter: blur(16px);
   border-top: 1px solid var(--border);
-   transform: translateZ(0);
-  -webkit-font-smoothing: antialiased;
 }
 .mbar-dot {
   width: 6px; height: 6px; border-radius: 50%;
@@ -103,14 +101,11 @@ body::after {
 .mbar-dot.off { animation: none; background: var(--dim); }
 @keyframes mdot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.65)} }
 
-.mbar-info { flex: 1; min-width: 0;  transform: translateZ(0);
-  -webkit-font-smoothing: antialiased;}
-.mbar-artist { font-family: var(--font-m); font-size: 8px; letter-spacing: 0.2em; color: var(--dim);  transform: translateZ(0);
-  -webkit-font-smoothing: antialiased;}
+.mbar-info { flex: 1; min-width: 0; }
+.mbar-artist { font-family: var(--font-m); font-size: 8px; letter-spacing: 0.2em; color: var(--dim); }
 .mbar-title {
   font-family: var(--font-d); font-size: 17px; letter-spacing: 0.04em;
-  color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transform: translateZ(0);
-  -webkit-font-smoothing: antialiased;
+  color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 
 .mbar-prog {
@@ -124,8 +119,6 @@ body::after {
 .mbar-time {
   font-family: var(--font-m); font-size: 8px; letter-spacing: 0.08em;
   color: var(--dim); white-space: nowrap; flex-shrink: 0;
-  width: 80px; text-align: right;  transform: translateZ(0);
-  -webkit-font-smoothing: antialiased;
 }
 
 .mbar-btn {

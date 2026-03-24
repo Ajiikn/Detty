@@ -11,6 +11,13 @@ import ShopSection from "./components/ShopSection";
 import AboutSection from "./components/AboutSection";
 import ContactSection from "./components/ContactSection";
 
+function fmtTime(s) {
+  if (!s || !isFinite(s)) return "--:--";
+  const m = Math.floor(s / 60);
+  const sec = Math.floor(s % 60);
+  return `${m}:${sec < 10 ? "0" : ""}${sec}`;
+}
+
 export default function App() {
   /* ── UI state ── */
   const [entered, setEntered] = useState(false);
@@ -22,11 +29,12 @@ export default function App() {
   /* ── Audio state ── */
   const [playing, setPlaying] = useState(false);
   const [trackIdx, setTrackIdx] = useState(0);
-  const [progress, setProgress] = useState(0);
-  const [curTime, setCurTime] = useState(0);
-  const [duration, setDuration] = useState(0);
 
   const audioRef = useRef(null);
+
+  /* ── Direct DOM refs for progress bar and timestamp ── */
+  const fillRef = useRef(null);
+  const timeRef = useRef(null);
 
   /* ─────────────────────────────────────────
      Build the Audio element once on mount.
@@ -46,11 +54,20 @@ export default function App() {
       if (now - lastUpdate < 250) return; // throttle updates (~4/sec)
       lastUpdate = now;
 
-      setCurTime(a.currentTime);
-      setProgress((a.currentTime / a.duration) * 100);
+      // Update DOM directly — zero re-renders, no blinking
+      if (fillRef.current) {
+        fillRef.current.style.width = `${(a.currentTime / a.duration) * 100}%`;
+      }
+      if (timeRef.current) {
+        timeRef.current.textContent = `${fmtTime(a.currentTime)} / ${fmtTime(a.duration)}`;
+      }
     });
 
-    a.addEventListener("loadedmetadata", () => setDuration(a.duration));
+    a.addEventListener("loadedmetadata", () => {
+      if (timeRef.current) {
+        timeRef.current.textContent = `--:-- / ${fmtTime(a.duration)}`;
+      }
+    });
 
     a.addEventListener("ended", () => {
       a.currentTime = 0;
@@ -78,9 +95,9 @@ export default function App() {
     a.src = TRACKS[idx].src;
     a.load();
     setTrackIdx(idx);
-    setProgress(0);
-    setCurTime(0);
-    setDuration(0);
+    // Reset DOM refs directly
+    if (fillRef.current) fillRef.current.style.width = "0%";
+    if (timeRef.current) timeRef.current.textContent = "--:-- / --:--";
     if (autoplay) a.play().catch(() => {});
   }, []);
 
@@ -178,9 +195,8 @@ export default function App() {
         <MusicBar
           track={TRACKS[trackIdx]}
           playing={playing}
-          progress={progress}
-          curTime={curTime}
-          duration={duration}
+          fillRef={fillRef}
+          timeRef={timeRef}
           onPlay={handleTogglePlay}
           onMute={handleMute}
           onSeek={handleSeek}
