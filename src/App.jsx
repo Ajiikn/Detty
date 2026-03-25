@@ -143,15 +143,7 @@ export default function App() {
     audioRef.current?.play().catch(() => {});
   }, []);
 
-  /* ─────────────────────────────────────────
-     Fix hero glitch on scroll-to-top.
-     Mobile browsers resize the viewport when
-     the address bar shows/hides, causing dvh
-     to recalculate and repaint the hero.
-     We measure the real height once on mount
-     and lock it into a CSS variable --vh so
-     it never changes mid-session.
-  ───────────────────────────────────────── */
+  /* ── Lock --vh once so hero never repaints when address bar moves ── */
   useEffect(() => {
     const setVh = () => {
       document.documentElement.style.setProperty(
@@ -159,40 +151,35 @@ export default function App() {
       );
     };
     setVh();
-    // Only update on actual orientation change, not address bar resize
     window.addEventListener("orientationchange", setVh);
     return () => window.removeEventListener("orientationchange", setVh);
   }, []);
 
-  /* ─────────────────────────────────────────
-     Lock body scroll when mobile menu is open.
-     - position:fixed handles iOS Safari
-     - touchmove preventDefault handles Android
-       (Chrome still fires touch events through
-       position:fixed overlays)
-  ───────────────────────────────────────── */
+  /* ── Scroll lock when mobile menu is open ──
+     position:fixed handles iOS Safari.
+     We do NOT use touchmove preventDefault here
+     because it blocks tap events on the menu
+     buttons on Android, breaking the nav links.
+     Instead we rely on position:fixed + the
+     mob-nav covering the full viewport.
+  ── */
   useEffect(() => {
-    const preventTouch = (e) => e.preventDefault();
     if (menuOpen) {
       const y = window.scrollY;
       document.body.style.position = "fixed";
       document.body.style.top = `-${y}px`;
       document.body.style.width = "100%";
-      // Block touchmove on the document for Android
-      document.addEventListener("touchmove", preventTouch, { passive: false });
     } else {
       const y = parseInt(document.body.style.top || "0", 10);
       document.body.style.position = "";
       document.body.style.top = "";
       document.body.style.width = "";
       window.scrollTo(0, -y);
-      document.removeEventListener("touchmove", preventTouch);
     }
     return () => {
       document.body.style.position = "";
       document.body.style.top = "";
       document.body.style.width = "";
-      document.removeEventListener("touchmove", preventTouch);
     };
   }, [menuOpen]);
 

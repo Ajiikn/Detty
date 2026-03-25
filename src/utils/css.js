@@ -27,7 +27,7 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* ── Grain overlay — desktop only, too expensive on mobile ── */
+/* ── Grain overlay — desktop only, repaints every frame on mobile ── */
 @media (min-width: 781px) {
 body::after {
   content: '';
@@ -72,8 +72,7 @@ body::after {
 .hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
 
 .mob-nav {
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
   width: 100%;
   height: 100vh;
   height: calc(var(--vh, 1vh) * 100);
@@ -85,11 +84,15 @@ body::after {
   will-change: transform;
   overflow: hidden;
   padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  /* overscroll-behavior stops Android from scrolling the page behind it */
+  overscroll-behavior: contain;
+  touch-action: none;
 }
 .mob-nav.open { transform: translateX(0); }
 .mob-nav button {
   font-family: var(--font-d); font-size: 52px; letter-spacing: 0.05em;
   color: var(--dim); background: none; border: none; cursor: pointer; transition: color 0.2s;
+  touch-action: auto;
 }
 .mob-nav button:hover { color: var(--acc); }
 
@@ -159,14 +162,14 @@ body::after {
 .entry-inner { display: flex; flex-direction: column; align-items: center; }
 .entry-logo {
   font-family: var(--font-d);
-  font-size: clamp(72px, 18vw, 160px);
+  font-size: clamp(44px, 12vw, 160px);
   line-height: 0.85; letter-spacing: 0.04em;
   margin-bottom: 10px;
 }
 .entry-logo em { color: var(--acc); font-style: normal; }
 .entry-tag {
   font-family: var(--font-m); font-size: 10px; letter-spacing: 0.25em;
-  color: var(--dim); margin-bottom: 64px; text-transform: uppercase;
+  color: var(--dim); margin-bottom: 40px; text-transform: uppercase;
 }
 .entry-sound {
   padding: 15px 44px; margin-bottom: 14px;
@@ -186,7 +189,7 @@ body::after {
 
 /* ════ HERO ════ */
 .hero {
-  min-height: 100vh; /* fallback */
+  min-height: 100vh;
   min-height: calc(var(--vh, 1vh) * 100);
   padding: 100px 32px;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
