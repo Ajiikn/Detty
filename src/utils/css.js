@@ -1,5 +1,5 @@
 export const CSS = `
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=block');
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -27,21 +27,22 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* ── Grain overlay ── */
+/* ── Grain overlay — desktop only, too expensive on mobile ── */
+@media (min-width: 781px) {
 body::after {
   content: '';
   position: fixed; inset: 0; z-index: 999; pointer-events: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E");
   opacity: 0.4;
 }
+}
 
 /* ════ NAVBAR ════ */
 .nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 100;
   display: flex; align-items: center; justify-content: space-between;
-  padding: 18px 36px;
-  background: rgba(6,6,6,0.88);
-  backdrop-filter: blur(16px);
+  padding: max(18px, env(safe-area-inset-top)) 36px 18px;
+  background: rgba(6,6,6,0.97);
   border-bottom: 1px solid var(--border);
 }
 .nav-brand {
@@ -71,11 +72,19 @@ body::after {
 .hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
 
 .mob-nav {
-  position: fixed; inset: 0; z-index: 99;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  width: 100%;
+  height: 100vh;
+  height: calc(var(--vh, 1vh) * 100);
+  z-index: 101;
   background: var(--bg);
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 28px;
   transform: translateX(100%);
   transition: transform 0.38s cubic-bezier(0.77,0,0.18,1);
+  will-change: transform;
+  overflow: hidden;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
 }
 .mob-nav.open { transform: translateX(0); }
 .mob-nav button {
@@ -89,14 +98,14 @@ body::after {
   position: fixed; bottom: 0; left: 0; right: 0; z-index: 95;
   display: flex; align-items: center; gap: 14px;
   padding: 10px 24px;
-  background: rgba(8,8,8,0.96);
-  backdrop-filter: blur(16px);
+  background: rgba(8,8,8,0.98);
   border-top: 1px solid var(--border);
 }
 .mbar-dot {
   width: 6px; height: 6px; border-radius: 50%;
   background: var(--teal); flex-shrink: 0;
   animation: mdot 1.6s ease-in-out infinite;
+  will-change: transform, opacity;
 }
 .mbar-dot.off { animation: none; background: var(--dim); }
 @keyframes mdot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.65)} }
@@ -113,7 +122,7 @@ body::after {
   background: var(--border); border-radius: 1px; overflow: hidden;
   cursor: pointer;
 }
-.mbar-fill { height: 100%; background: var(--teal); border-radius: 1px; transition: width 0.25s linear; }
+.mbar-fill { height: 100%; background: var(--teal); border-radius: 1px; transition: width 0.25s linear; will-change: width; }
 
 /* ── Timestamp ── */
 .mbar-time {
@@ -144,6 +153,8 @@ body::after {
   position: fixed; inset: 0; z-index: 200;
   display: flex; align-items: center; justify-content: center;
   background: var(--bg); text-align: center; padding: 20px;
+  height: 100vh;
+  height: calc(var(--vh, 1vh) * 100);
 }
 .entry-inner { display: flex; flex-direction: column; align-items: center; }
 .entry-logo {
@@ -175,7 +186,9 @@ body::after {
 
 /* ════ HERO ════ */
 .hero {
-  min-height: 100dvh; padding: 100px 32px;
+  min-height: 100vh; /* fallback */
+  min-height: calc(var(--vh, 1vh) * 100);
+  padding: 100px 32px;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   text-align: center; position: relative; overflow: hidden;
 }
@@ -219,6 +232,7 @@ body::after {
   font-family: var(--font-m); font-size: 8px; letter-spacing: 0.22em; color: var(--dim);
   display: flex; flex-direction: column; align-items: center; gap: 8px;
   animation: scrollBlink 2.5s ease-in-out infinite;
+  will-change: opacity;
 }
 .hero-scroll::after { content: ''; width: 1px; height: 28px; background: var(--dim); }
 @keyframes scrollBlink { 0%,100%{opacity:0.8} 50%{opacity:0.2} }
@@ -243,6 +257,7 @@ body::after {
 .pcard img {
   width: 100%; height: 100%; object-fit: cover; display: block;
   transition: transform 0.65s cubic-bezier(0.25,0.46,0.45,0.94);
+  will-change: transform;
 }
 .pcard:hover img { transform: scale(1.06); }
 .pcard-overlay {
