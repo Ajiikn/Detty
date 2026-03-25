@@ -202,8 +202,15 @@ export default function App() {
   }, []);
 
   const scrollTo = useCallback((id) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+    // Close the menu first — this triggers the useEffect which
+    // removes position:fixed and restores the scroll position.
+    // Then wait one frame for the body to be back in normal flow
+    // before scrolling, otherwise scrollIntoView fires against
+    // a frozen page and gets ignored on Android.
     setMenuOpen(false);
+    setTimeout(() => {
+      document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+    }, 50);
   }, []);
 
   return (
